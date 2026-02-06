@@ -1,0 +1,74 @@
+Ghi chú:
+- Do môi trường hiện tại không truy cập được DOM thật từ gist, nên dưới đây là CÁCH LÀM + MẪU XPATH để bạn áp dụng.
+- Khi mở DOM thật, bạn thay lại số thứ tự [1], [2], ... sao cho khớp với cấu trúc trang.
+
+====================
+1. Xpath TUYỆT ĐỐI
+====================
+Yêu cầu: chọn phần tử
+ a) Input "Họ và tên"
+ b) Button "Đăng ký"
+ c) Hàng đầu tiên trong tbody
+
+Ví dụ DOM thường gặp (minh họa):
+<table id="customer">
+  <tbody>
+    <tr>
+      <td><input type="text" name="fullname" placeholder="Họ và tên"></td>
+      ...
+    </tr>
+    ...
+  </tbody>
+</table>
+<button type="submit">Đăng ký</button>
+
+a) Input "Họ và tên" – xpath tuyệt đối (mẫu)
+   /html/body//table[@id='customer']/tbody/tr[1]/td[1]/input
+
+b) Button "Đăng ký" – xpath tuyệt đối (mẫu)
+   /html/body//button[text()='Đăng ký']
+
+c) Hàng đầu tiên trong tbody – xpath tuyệt đối (mẫu)
+   /html/body//table[@id='customer']/tbody/tr[1]
+
+====================
+2. Xpath TƯƠNG ĐỐI
+====================
+Yêu cầu: chọn phần tử
+ a) Input có placeholder="Số điện thoại"
+ b) Email "Trần Thị Bình" (hàng 2, cột 2)
+ c) Số điện thoại của "Lê Hoàng Cương" (hàng 3, cột 3)
+ d) Button có class="btn-register"
+ e) Table có id="resultTable"
+
+Giả sử DOM dạng:
+<table id="resultTable">
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Trần Thị Bình</td>
+      <td>0901 111 222</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Lê Hoàng Cương</td>
+      <td>0902 333 444</td>
+    </tr>
+  </tbody>
+</table>
+
+a) Input có placeholder="Số điện thoại"
+   //input[@placeholder='Số điện thoại']
+
+b) Lấy email của "Trần Thị Bình" (hàng 2, cột 2)
+   //table[@id='resultTable']//tbody/tr[2]/td[2]
+
+c) Lấy số điện thoại của "Lê Hoàng Cương" (hàng 3, cột 3)
+   //table[@id='resultTable']//tbody/tr[3]/td[3]
+
+d) Button có class="btn-register"
+   //button[contains(@class, 'btn-register')]
+
+e) Table có id="resultTable"
+   //table[@id='resultTable']
+
