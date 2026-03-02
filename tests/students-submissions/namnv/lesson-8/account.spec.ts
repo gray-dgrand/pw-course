@@ -1,12 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-// Module: ACCOUNT - Account management
-// Site under test: https://pw-practice-dev.playwrightvn.com/wp-admin
-// Lưu ý: các bước login lại được gom vào beforeEach để tránh lặp lại.
-
 const ADMIN_LOGIN_URL = 'https://pw-practice-dev.playwrightvn.com/wp-admin';
 
-// Đọc thông tin admin thật từ biến môi trường khi chạy test
 const ADMIN_USERNAME = process.env.PW_AUTH_USERNAME ?? 'admin';
 const ADMIN_PASSWORD = process.env.PW_AUTH_PASSWORD ?? 'admin_password';
 
@@ -24,8 +19,6 @@ test.describe('ACC - Account', () => {
   });
 
   test('@ACC_D01: Create account with editor permission', async ({ page }) => {
-    // Preconditions: đang đăng nhập với admin
-    // Step: đi tới trang Users -> Add New
     await page.goto('https://pw-practice-dev.playwrightvn.com/wp-admin/user-new.php');
 
     const username = `editor_${Date.now()}`;
@@ -36,10 +29,8 @@ test.describe('ACC - Account', () => {
     await page.getByLabel('First Name').fill('Editor');
     await page.getByLabel('Last Name').fill('User');
 
-    // Chọn role Editor
     await page.getByLabel('Role').selectOption('editor');
 
-    // Bỏ chọn "Send the new user an email..." nếu cần để tránh gửi mail thật
     const sendEmailCheckbox = page.getByLabel(
       /Send the new user an email about their account/i,
     );
@@ -49,7 +40,6 @@ test.describe('ACC - Account', () => {
 
     await page.getByRole('button', { name: 'Add New User' }).click();
 
-    // Expected: hiển thị thông báo "New user created."
     await expect(page.getByRole('alert')).toContainText(/New user created/i);
   });
 
@@ -64,7 +54,6 @@ test.describe('ACC - Account', () => {
     await page.getByLabel('First Name').fill('Subscriber');
     await page.getByLabel('Last Name').fill('User');
 
-    // Chọn role Subscriber
     await page.getByLabel('Role').selectOption('subscriber');
 
     const sendEmailCheckbox = page.getByLabel(
@@ -78,7 +67,6 @@ test.describe('ACC - Account', () => {
 
     await expect(page.getByRole('alert')).toContainText(/New user created/i);
 
-    // Optional: verify user mới đã nằm trong danh sách Users
     await page.goto('https://pw-practice-dev.playwrightvn.com/wp-admin/users.php');
     await expect(page.getByRole('link', { name: username })).toBeVisible();
   });
