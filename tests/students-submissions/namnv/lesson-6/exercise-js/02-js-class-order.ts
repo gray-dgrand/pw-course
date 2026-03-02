@@ -1,7 +1,8 @@
 export type OrderItem = {
   name: string;
   price: number;
-  quantity: number;
+  amount: number;
+  discount: number; // phần trăm giảm giá, ví dụ 10 nghĩa là giảm 10%
 };
 
 export class Order {
@@ -18,17 +19,18 @@ export class Order {
    */
   addItem(item: OrderItem): void {
     this.items.push(item);
-    this.recalculateTotal();
+    this.calculateTotal();
   }
 
   /**
-   * Tính lại tổng tiền dựa trên các sản phẩm hiện có.
+   * Tính tổng số tiền của đơn hàng sau khi áp dụng giảm giá cho từng sản phẩm.
    */
-  private recalculateTotal(): void {
-    this.totalAmount = this.items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0,
-    );
+  calculateTotal(): void {
+    this.totalAmount = this.items.reduce((sum, item) => {
+      const raw = item.price * item.amount;
+      const discountAmount = (raw * item.discount) / 100;
+      return sum + (raw - discountAmount);
+    }, 0);
   }
 
   /**
@@ -39,10 +41,11 @@ export class Order {
     lines.push(`Order #${this.orderId} - Customer: ${this.customerName}`);
     lines.push('Items:');
     for (const item of this.items) {
+      const raw = item.price * item.amount;
+      const discountAmount = (raw * item.discount) / 100;
+      const final = raw - discountAmount;
       lines.push(
-        `- ${item.name}: ${item.quantity} x ${item.price} = ${
-          item.price * item.quantity
-        }`,
+        `- ${item.name}: ${item.amount} x ${item.price} - ${item.discount}% = ${final}`,
       );
     }
     lines.push(`Total amount: ${this.totalAmount}`);
